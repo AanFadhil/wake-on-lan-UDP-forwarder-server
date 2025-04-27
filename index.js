@@ -8,6 +8,7 @@ const package = require("./package.json"); // Import package.json for version in
 const { receiveUdpPing } = require("./services/udp.services"); // Import the UDP service function
 const wakeUpService = require("./services/wakeup.services"); // Import the wakeup service function
 const encryption = require("./services/encryption.services");
+const path = require("path");
 
 const app = express();
 const udpServer = dgram.createSocket("udp4");
@@ -17,6 +18,7 @@ const udpServerEcho = dgram.createSocket("udp4");
 app.use(cors());
 app.use(helmet());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack); // Log the error stack trace
@@ -27,7 +29,14 @@ app.use((err, req, res, next) => {
 });
 
 // Express server routes
+app.use(express.static(path.join(__dirname, "public")));
+
 app.get("/", (req, res) => {
+  res.set("Content-Security-Policy", "script-src 'self' 'nonce-abc123'");
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+app.get("/stats", (req, res) => {
   res.send(
     `Wake On LAN UDP Forwarder Server ${
       package.version
@@ -36,15 +45,15 @@ app.get("/", (req, res) => {
 });
 
 app.post("/wake-up-call", (req, res) => {
-  const { message } = req.body; // Extract message from request body
-  if (!message) {
+  const { password } = req.body; // Extract message from request body
+  if (!password) {
     return res.status(400).json({
       message: "Message is required",
       success: false,
     });
   }
 
-  const result = wakeUpService.handleWakeUpCall(message); // Call the wake up service function
+  const result = wakeUpService.handleWakeUpCall(password); // Call the wake up service function
 
   res.json(result);
 });
@@ -109,10 +118,12 @@ udpServerEcho.on("message", (msg, rinfo) => {
   );
 });
 
-udpServerEcho.bind(ECHO_PORT, process.env.UDP_ECHO_ADDRESS);
-udpServerEcho.on("listening", () => {
-  const address = udpServerEcho.address();
-  console.log(
-    `UDP ECHO server is listening on ${address.address}:${address.port}`
-  );
-});
+if (process.env.ENABLE_ECHO === "true") {
+  udpServerEcho.bind(ECHO_PORT, process.env.UDP_ECHO_ADDRESS);
+  udpServerEcho.on("listening", () => {
+    const address = udpServerEcho.address();
+    console.log(
+      `UDP ECHO server is listening on ${address.address}:${address.port}`
+    );
+  });
+}
