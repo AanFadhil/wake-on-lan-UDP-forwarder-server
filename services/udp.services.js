@@ -1,7 +1,7 @@
 const udpDataAccess = require("../data/udpAddress.data");
 const dgram = require("dgram");
 const encryption = require("./encryption.services");
-const { udpServer } = require("../servers/udp.server");
+const { getUdpServer } = require("../servers/udp.server");
 
 /**
  *
@@ -25,7 +25,7 @@ const receiveUdpPing = (message, rinfo) => {
     udpDataAccess.update(rinfo.address, rinfo.port); // Update the UDP address and port in the data access layer
 
     const responseMessage = Buffer.from("pong");
-
+    const udpServer = getUdpServer(); // Get the UDP server instance
     udpServer.send(responseMessage, rinfo.port, rinfo.address, (err) => {
       if (err) {
         console.error(`Error sending response: ${err}`);

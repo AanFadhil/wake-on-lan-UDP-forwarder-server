@@ -45,8 +45,11 @@ const start = () => {
   }
 };
 
+const getUdpServer = () => {
+  return udpServer;
+};
+
 module.exports = {
   start,
-  udpServer,
-  udpServerEcho,
+  getUdpServer,
 };
