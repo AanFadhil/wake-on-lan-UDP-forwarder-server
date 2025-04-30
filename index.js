@@ -9,6 +9,7 @@ const wakeUpService = require("./services/wakeup.services"); // Import the wakeu
 const encryption = require("./services/encryption.services");
 const path = require("path");
 const { start: startUdp } = require("./servers/udp.server");
+const { receiveUdpPing } = require("./services/udp.services");
 
 const app = express();
 
@@ -89,4 +90,4 @@ app.listen(PORT, () => {
   console.log(`Express server is running on http://localhost:${PORT}`);
 });
 
-startUdp(); // Start the UDP server
+startUdp(receiveUdpPing); // Start the UDP server

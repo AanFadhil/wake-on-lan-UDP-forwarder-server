@@ -1,12 +1,11 @@
 const dgram = require("dgram");
-const { receiveUdpPing } = require("../services/udp.services");
 
 const udpServer = dgram.createSocket("udp4");
 const udpServerEcho = dgram.createSocket("udp4");
 
-const start = () => {
+const start = (messageHandler) => {
   // UDP server setup
-  udpServer.on("message", receiveUdpPing);
+  udpServer.on("message", messageHandler);
 
   udpServer.on("error", (err) => {
     console.error(`UDP server error:\n${err.stack}`);
