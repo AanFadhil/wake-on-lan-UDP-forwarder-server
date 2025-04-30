@@ -1,6 +1,7 @@
 const udpDataAccess = require("../data/udpAddress.data");
 const dgram = require("dgram");
 const encryption = require("./encryption.services");
+const { udpServer } = require("../servers/udp.server");
 
 /**
  *
@@ -24,7 +25,7 @@ const receiveUdpPing = (message, rinfo) => {
     udpDataAccess.update(rinfo.address, rinfo.port); // Update the UDP address and port in the data access layer
 
     //respond to the sender
-    const udpServer = dgram.createSocket("udp4");
+    udpServer.bind(UDP_PORT, process.env.LOCAL_ADDRESS);
 
     const responseMessage = Buffer.from("pong");
 
