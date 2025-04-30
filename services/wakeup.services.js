@@ -1,6 +1,6 @@
 const encryption = require("./encryption.services");
 const udpDataAccess = require("../data/udpAddress.data");
-const dgram = require("dgram");
+const { getUdpServer } = require("../servers/udp.server");
 
 /**
  *
@@ -20,7 +20,7 @@ const handleWakeUpCall = (message) => {
     return { message: "no address or port", success: false }; // Ignore if the address or port is not set
 
   //forward wake up call in UDP to ESP32
-  const udpServer = dgram.createSocket("udp4");
+  const udpServer = getUdpServer(); // Get the UDP server instance
 
   const responseMessage = "wakey";
 
