@@ -5,7 +5,6 @@ const helmet = require("helmet");
 const dgram = require("dgram");
 const package = require("./package.json"); // Import package.json for version info
 
-const { receiveUdpPing } = require("./services/udp.services"); // Import the UDP service function
 const wakeUpService = require("./services/wakeup.services"); // Import the wakeup service function
 const encryption = require("./services/encryption.services");
 const path = require("path");

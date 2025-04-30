@@ -1,4 +1,5 @@
 const dgram = require("dgram");
+const { receiveUdpPing } = require("../services/udp.services");
 
 const udpServer = dgram.createSocket("udp4");
 const udpServerEcho = dgram.createSocket("udp4");
