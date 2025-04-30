@@ -24,9 +24,6 @@ const receiveUdpPing = (message, rinfo) => {
 
     udpDataAccess.update(rinfo.address, rinfo.port); // Update the UDP address and port in the data access layer
 
-    //respond to the sender
-    udpServer.bind(UDP_PORT, process.env.LOCAL_ADDRESS);
-
     const responseMessage = Buffer.from("pong");
 
     udpServer.send(responseMessage, rinfo.port, rinfo.address, (err) => {
