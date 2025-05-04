@@ -31,7 +31,6 @@ const handleWakeUpCall = (message) => {
     } else {
       console.log(`Response sent to ${rinfo.address}:${rinfo.port}`);
     }
-    udpServer.close();
   });
 
   return {
